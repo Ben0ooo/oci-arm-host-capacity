@@ -1,4 +1,4 @@
-name: Tests
+name: OCI ARM Capacity
 
 on:
   workflow_dispatch:
@@ -6,9 +6,8 @@ on:
     - cron: '*/5 * * * *'
 
 jobs:
-  tests:
+  create-instance:
     runs-on: ubuntu-latest
-    name: oci-arm-capacity
     steps:
       - uses: actions/checkout@v2
       - name: Install PHP
@@ -21,8 +20,8 @@ jobs:
         run: |
           echo "${{ secrets.OCI_PRIVATE_KEY_BASE64 }}" | base64 -d > /tmp/oci_key.pem
           chmod 600 /tmp/oci_key.pem
-      - name: Run
-        run: vendor/bin/phpunit --color tests/
+      - name: Try to create ARM instance
+        run: php index.php
         env:
           OCI_REGION: ${{ secrets.OCI_REGION }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
